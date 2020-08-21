@@ -1,0 +1,61 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>GridApp</title>
+    <script src="/Scripts/dhtmlxcommon.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/Scripts/dhtmlxgrid.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/Scripts/dhtmlxgridcell.js" type="text/javascript" charset="utf-8"></script>
+    <script src="~/Scripts/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="/Scripts/dhtmlxgrid.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="/Scripts/skins/dhtmlxgrid_dhx_skyblue.css" type="text/css" media="screen" charset="utf-8">
+
+</head>
+<body>
+    <div id="hr_grid" style="width:600px; height:400px;"></div>
+    <div id="employee_grid" style="width:600px; height:400px;">
+    </div>
+    <script type="text/javascript" charset="utf-8">
+        var hrGrid = new dhtmlXGridObject("hr_grid");
+        hrGrid.setHeader("ID, Имя");
+        hrGrid.setInitWidths("30,100,*");
+        hrGrid.setSkin("dhx_skyblue");
+        hrGrid.init();    
+        
+        var employeeGrid = new dhtmlXGridObject("employee_grid");
+        employeeGrid.setHeader("Id, Name");
+        employeeGrid.setInitWidths("30,100,*");
+        employeeGrid.setSkin("dhx_skyblue");
+        employeeGrid.init();
+        
+        $.ajax({
+            url: "http://localhost:62960/Home/GetHrs",
+            dataType: "json",
+            success: function (data) {
+                addToGrid(data, hrGrid);
+            }                
+        });
+        $.ajax({
+            url: "http://localhost:62960/Home/GetEmployees",
+            dataType: "json",
+            success: function (data) {
+                addToGrid(data, employeeGrid);
+            }
+        });
+        function addToGrid(data, grid) {
+            json = JSON.parse(data);
+            for (var i = 0; i < json["rows"].length; i++) {
+                var dataArr = json['rows'][i]["data"];
+                grid.addRow(i, dataArr[0]);
+                grid.cells(i, 1).setValue(dataArr[1]);
+            }
+        }
+
+    </script>
+</body>
+</html>
